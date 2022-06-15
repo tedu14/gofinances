@@ -17,6 +17,7 @@ export function Dashboard() {
               <D.UserName>Thalison</D.UserName>
             </D.UserContainer>
           </D.UserInfo>
+          <D.Icon name="power" />
         </D.UserWrapper>
       </D.Header>
     </D.Wrapper>
