@@ -1,4 +1,5 @@
 import React from "react";
+import HighlightCard from "../../components/HighlightCard";
 import * as D from "./styled";
 
 export function Dashboard() {
@@ -20,6 +21,11 @@ export function Dashboard() {
           <D.Icon name="power" />
         </D.UserWrapper>
       </D.Header>
+      <D.HighlightCards>
+        <HighlightCard />
+        <HighlightCard />
+        <HighlightCard />
+      </D.HighlightCards>
     </D.Wrapper>
   );
 }
