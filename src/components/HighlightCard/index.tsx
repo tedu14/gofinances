@@ -1,15 +1,28 @@
 import * as H from "./styled";
 
-export default function HighlightCard() {
+type Props = {
+  title: string;
+  amount: string;
+  info: string;
+  type: keyof H.ITypeIcon;
+};
+
+const getIcon: H.ITypeIcon = {
+  up: "arrow-up-circle",
+  down: "arrow-down-circle",
+  total: "dollar-sign",
+};
+
+export default function HighlightCard({ amount, info, title, type }: Props) {
   return (
-    <H.Wrapper>
+    <H.Wrapper type={type}>
       <H.Header>
-        <H.Title>Entrada</H.Title>
-        <H.Icon name="arrow-up-circle" />
+        <H.Title type={type}>{title}</H.Title>
+        <H.Icon name={getIcon[type]} type={type} />
       </H.Header>
       <H.Footer>
-        <H.Amount>R$ 17.400,00</H.Amount>
-        <H.Info>Última entrada dia 13 de abril</H.Info>
+        <H.Amount type={type}>{amount}</H.Amount>
+        <H.Info type={type}>{info}</H.Info>
       </H.Footer>
     </H.Wrapper>
   );
