@@ -11,6 +11,7 @@ import * as Font from "expo-font";
 import { theme } from "./src/global/styles/theme";
 import { Dashboard } from "./src/screens/Dashboard";
 import { View } from "react-native";
+import Register from "./src/screens/Register";
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -52,7 +53,8 @@ export default function App() {
           flex: 1,
         }}
       >
-        <Dashboard />
+        {/* <Dashboard /> */}
+        <Register />
       </View>
     </ThemeProvider>
   );
