@@ -6,6 +6,7 @@ import {
   getStatusBarHeight,
 } from "react-native-iphone-x-helper";
 import { FlatList } from "react-native";
+import { BorderlessButton } from "react-native-gesture-handler";
 import { ITransactionsList } from ".";
 
 export const Wrapper = styled.View`
@@ -62,6 +63,8 @@ export const UserPhoto = styled.Image`
   height: ${RFValue(48)}px;
   border-radius: 10px;
 `;
+
+export const LogoutButton = styled(BorderlessButton)``;
 
 export const Icon = styled(IconVector)`
   color: ${({ theme }) => theme.colors.secondary};

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Keyboard, Modal, TouchableWithoutFeedback } from "react-native";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -58,6 +58,10 @@ export default function Register() {
     if (category.key === "category")
       return Alert.alert("Selecione a categoria!");
   };
+
+  useEffect(() => {
+    console.log(transactionType);
+  }, [transactionType]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

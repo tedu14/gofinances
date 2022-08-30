@@ -62,7 +62,9 @@ export function Dashboard() {
               <D.UserName>Thalison</D.UserName>
             </D.UserContainer>
           </D.UserInfo>
-          <D.Icon name="power" />
+          <D.LogoutButton onPress={() => {}}>
+            <D.Icon name="power" />
+          </D.LogoutButton>
         </D.UserWrapper>
       </D.Header>
       <D.HighlightCards>

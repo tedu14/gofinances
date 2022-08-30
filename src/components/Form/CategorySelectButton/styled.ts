@@ -1,9 +1,9 @@
 import styled from "styled-components/native";
 import Father from "react-native-vector-icons/Feather";
-import { TouchableOpacity } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 
-export const Wrapper = styled(TouchableOpacity).attrs({
+export const Wrapper = styled(RectButton).attrs({
   activeOpacity: 0.7,
 })`
   background-color: ${({ theme }) => theme.colors.shape};

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/native";
 import Feather from "react-native-vector-icons/Feather";
-import { TouchableOpacity } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 
 import { Props } from ".";
@@ -13,13 +13,9 @@ type WrapperProps = ColorType & {
   isActive: boolean;
 };
 
-export const Wrapper = styled(TouchableOpacity)<WrapperProps>`
+export const Wrapper = styled.View<WrapperProps>`
   width: 48%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   border: 1.5px solid ${({ theme }) => theme.colors.text};
-  padding: ${RFValue(16)}px;
   border-radius: 5px;
 
   ${({ theme: { colors }, isActive, type }) =>
@@ -30,6 +26,13 @@ export const Wrapper = styled(TouchableOpacity)<WrapperProps>`
         ? colors.attention_light
         : colors.success_light};
     `}
+`;
+
+export const Button = styled(RectButton)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: ${RFValue(16)}px;
 `;
 
 export const Icon = styled(Feather)<ColorType>`
