@@ -9,10 +9,8 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 
 import { theme } from "./src/global/styles/theme";
-import { Dashboard } from "./src/screens/Dashboard";
+import AppRoutes from "./src/routes/app.routes";
 import { View } from "react-native";
-import Register from "./src/screens/Register";
-import CategorySelect from "./src/screens/CategorySelect";
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -54,9 +52,7 @@ export default function App() {
           flex: 1,
         }}
       >
-        {/* <Dashboard /> */}
-        <Register />
-        {/* <CategorySelect /> */}
+        <AppRoutes />
       </View>
     </ThemeProvider>
   );
