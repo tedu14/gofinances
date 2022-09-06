@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   Poppins_400Regular,
   Poppins_700Bold,
@@ -52,7 +53,9 @@ export default function App() {
           flex: 1,
         }}
       >
-        <AppRoutes />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <AppRoutes />
+        </GestureHandlerRootView>
       </View>
     </ThemeProvider>
   );

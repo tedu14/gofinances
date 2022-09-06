@@ -84,7 +84,7 @@ export const HighlightCards = styled.ScrollView.attrs({
 `;
 
 export const Title = styled.Text`
-  font-size: ${RFValue(18)};
+  font-size: ${RFValue(18)}px;
   font-family: ${({ theme }) => theme.fonts.regular};
 `;
 

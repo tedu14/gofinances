@@ -59,10 +59,6 @@ export default function Register() {
       return Alert.alert("Selecione a categoria!");
   };
 
-  useEffect(() => {
-    console.log(transactionType);
-  }, [transactionType]);
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <R.Wrapper>

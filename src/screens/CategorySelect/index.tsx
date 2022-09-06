@@ -24,6 +24,10 @@ export default function CategorySelect({
     setCategory(item);
   };
 
+  const handleCloseSelectCategory = () => {
+    closeSelectCategory();
+  };
+
   return (
     <C.Container>
       <C.Header>
@@ -49,7 +53,7 @@ export default function CategorySelect({
       />
 
       <C.Footer>
-        <Button title="Selecionar" onPress={closeSelectCategory} />
+        <Button title="Selecionar" onPress={handleCloseSelectCategory} />
       </C.Footer>
     </C.Container>
   );
