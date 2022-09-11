@@ -1,6 +1,6 @@
 import * as H from "./styled";
 
-type Props = {
+export type HighlightCardProps = {
   title: string;
   amount: string;
   info: string;
@@ -13,7 +13,12 @@ const getIcon: H.ITypeIcon = {
   total: "dollar-sign",
 };
 
-export default function HighlightCard({ amount, info, title, type }: Props) {
+export default function HighlightCard({
+  amount,
+  info,
+  title,
+  type,
+}: HighlightCardProps) {
   return (
     <H.Wrapper type={type}>
       <H.Header>

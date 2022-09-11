@@ -7,7 +7,7 @@ type Category = {
 };
 
 export type TransactionCardProps = {
-  title: string;
+  name: string;
   amount: string;
   category: Category;
   date: string;
@@ -19,11 +19,11 @@ type Props = {
 };
 
 export function TransactionCard({
-  data: { amount, category, date, title, type },
+  data: { amount, category, date, name, type },
 }: Props) {
   return (
     <T.Wrapper>
-      <T.Title>{title}</T.Title>
+      <T.Title>{name}</T.Title>
       <T.Amount type={type}>
         {type === "negative" && "- "}
         {amount}
