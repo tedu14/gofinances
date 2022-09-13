@@ -13,6 +13,7 @@ import { storageKeys } from "../../config/storagesKey";
 import { useStorage } from "../../hooks/useStorage";
 import * as D from "./styled";
 import Loading from "../../components/Loading";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const faultHighlightData: HighlightCardProps[] = [
   {
@@ -37,6 +38,11 @@ const faultHighlightData: HighlightCardProps[] = [
 
 export interface ITransactionsList extends TransactionCardProps {
   id: string;
+  category: {
+    icon: string;
+    name: string;
+    key: string;
+  };
 }
 
 export function Dashboard() {
@@ -45,12 +51,6 @@ export function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   const { getItem } = useStorage(storageKeys.transactionKey);
-
-  const formattedAmount = (amount: string | number) =>
-    Number(amount).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
 
   const formattedDate = (date: string | number) =>
     Intl.DateTimeFormat("pt-BR", {
@@ -114,14 +114,14 @@ export function Dashboard() {
 
           switch (item.type) {
             case "total":
-              amount = formattedAmount(entries - expensives);
+              amount = formatCurrency(entries - expensives);
               break;
             case "up":
-              amount = formattedAmount(entries);
+              amount = formatCurrency(entries);
               info = getLastDate("positive", item.info);
               break;
             default:
-              amount = formattedAmount(expensives);
+              amount = formatCurrency(expensives);
               info = getLastDate("negative", item.info);
           }
 
@@ -142,13 +142,17 @@ export function Dashboard() {
       defaultValue: [],
     });
 
-    const transactionsFormatted = currentTransactions.map(
-      ({ amount, date, ...rest }) => ({
-        amount: formattedAmount(amount),
+    const transactionsFormatted = currentTransactions
+      .sort((firstItem, secondItem) => {
+        const firstDate = new Date(firstItem.date);
+        const secondDate = new Date(secondItem.date);
+        return secondDate.getTime() - firstDate.getTime();
+      })
+      .map(({ amount, date, ...rest }) => ({
+        amount: formatCurrency(amount),
         date: formattedDate(date),
         ...rest,
-      })
-    );
+      }));
 
     setTransactions(transactionsFormatted);
     handleHighlightData(currentTransactions);

@@ -14,6 +14,7 @@ import * as R from "./styled";
 import { useStorage } from "../../hooks/useStorage";
 import { useNavigate } from "../../hooks/useNavigate";
 import { storageKeys } from "../../config/storagesKey";
+import Header from "../../components/Header";
 
 type FormData = {
   name: string;
@@ -94,9 +95,7 @@ export default function Register() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <R.Wrapper>
-        <R.Header>
-          <R.Title>Cadastro</R.Title>
-        </R.Header>
+        <Header title="Cadastro" />
         <R.Form>
           <R.Fields>
             <InputForm
