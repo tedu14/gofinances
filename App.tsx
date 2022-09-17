@@ -13,7 +13,7 @@ import "intl/locale-data/jsonp/pt-BR";
 
 import { theme } from "./src/global/styles/theme";
 import AppRoutes from "./src/routes/app.routes";
-import { View } from "react-native";
+import { StatusBar, View } from "react-native";
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -49,6 +49,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <StatusBar barStyle="light-content" />
       <View
         onLayout={onLayoutRootView}
         style={{

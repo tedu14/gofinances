@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { useEffect } from "react";
 import { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import HighlightCard, {
@@ -156,10 +155,6 @@ export function Dashboard() {
 
     setTransactions(transactionsFormatted);
     handleHighlightData(currentTransactions);
-  }, []);
-
-  useEffect(() => {
-    loadTransaction();
   }, []);
 
   useFocusEffect(

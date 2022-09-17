@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { VictoryPie } from "victory-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTheme } from "styled-components";
+import { addMonths, subMonths, format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 import * as R from "./styled";
 import Header from "../../components/Header";
@@ -28,19 +30,40 @@ export default function ResumePage() {
     []
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const theme = useTheme();
   const { getItem } = useStorage(storageKeys.transactionKey);
 
-  const loadingTransactions = useCallback(async () => {
+  const handleChangeDate = (action: "next" | "prev") => {
+    if (action === "next") {
+      const nextDate = addMonths(selectedDate, 1);
+      setSelectedDate(nextDate);
+      return;
+    }
+    const prevDate = subMonths(selectedDate, 1);
+    setSelectedDate(prevDate);
+  };
+
+  const loadingTransactions = async () => {
     setIsLoading(true);
     const currentTransactions = await getItem<ITransactionsList[]>({
       defaultValue: [],
     });
 
-    const expensives = currentTransactions.filter(
-      (item) => item.type === "negative"
-    );
+    const expensives = currentTransactions.filter((item) => {
+      const date = new Date(item.date);
+      const expensiveMonth = date.getMonth();
+      const expensiveYear = date.getFullYear();
+      const selectedMonth = selectedDate.getMonth();
+      const selectedYear = selectedDate.getFullYear();
+
+      return (
+        item.type === "negative" &&
+        expensiveMonth === selectedMonth &&
+        expensiveYear === selectedYear
+      );
+    });
     const expensivesTotal = expensives.reduce(
       (total, item) => total + Number(item.amount),
       0
@@ -73,16 +96,12 @@ export default function ResumePage() {
 
     setHistoryTransaction(totalByCategory);
     setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    loadingTransactions();
-  }, []);
+  };
 
   useFocusEffect(
     useCallback(() => {
       loadingTransactions();
-    }, [])
+    }, [selectedDate])
   );
 
   return (
@@ -91,6 +110,18 @@ export default function ResumePage() {
       {isLoading && <Loading />}
       {!isLoading && (
         <R.Content>
+          <R.MonthSelect>
+            <R.MonthSelectButton onPress={() => handleChangeDate("prev")}>
+              <R.SelectIcon name="chevron-left" />
+            </R.MonthSelectButton>
+            <R.Month>
+              {format(selectedDate, "MMMM, yyyy", { locale: ptBR })}
+            </R.Month>
+            <R.MonthSelectButton onPress={() => handleChangeDate("next")}>
+              <R.SelectIcon name="chevron-right" />
+            </R.MonthSelectButton>
+          </R.MonthSelect>
+
           <R.ChartContainer>
             <VictoryPie
               colorScale={historyTransaction.map((item) => item.color)}
