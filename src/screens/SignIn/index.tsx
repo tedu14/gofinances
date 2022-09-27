@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { RFValue } from "react-native-responsive-fontsize";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 
 import * as S from "./styled";
 
@@ -9,27 +9,30 @@ import GoogleSvg from "../../assets/google.svg";
 import LogoSvg from "../../assets/logo.svg";
 import SignInSocialButton from "../../components/SignInSocialButton";
 import { useAuth } from "../../providers/AuthProvider";
+import Loading from "../../components/Loading";
 
 export default function SignInPage() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { signInWithGoogle, signInWithApple } = useAuth();
 
-  const handleSignInWithGoogle = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (err) {
-      console.log(err);
-      Alert.alert("Não foi possível conectar com a conta Google");
-    }
-  };
+  const handleSingIn = useCallback(
+    (signIn: () => Promise<void>, account: string) => async () => {
+      try {
+        setIsLoading(true);
+        return await signIn();
+      } catch (err: any) {
+        console.log(err);
+        Alert.alert(`Não foi possível conectar com a conta ${account}`);
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
-  const handleSignInWithApple = async () => {
-    try {
-      await signInWithApple();
-    } catch (err) {
-      console.log(err);
-      Alert.alert("Não foi possível conectar com a conta Apple");
-    }
-  };
+  const handleSignInWithGoogle = handleSingIn(signInWithGoogle, "Google");
+
+  const handleSignInWithApple = handleSingIn(signInWithApple, "Apple");
 
   return (
     <S.Container>
@@ -51,12 +54,15 @@ export default function SignInPage() {
             title="Entrar com Google"
             svg={GoogleSvg}
           />
-          <SignInSocialButton
-            onPress={handleSignInWithApple}
-            title="Entrar com Apple"
-            svg={AppleSvg}
-          />
+          {Platform.OS === "ios" && (
+            <SignInSocialButton
+              onPress={handleSignInWithApple}
+              title="Entrar com Apple"
+              svg={AppleSvg}
+            />
+          )}
         </S.SignInContentButtons>
+        {isLoading && <Loading color="shape" />}
       </S.Footer>
     </S.Container>
   );

@@ -11,10 +11,9 @@ import InputForm from "../../components/Form/InputForm";
 import TransactionTypeButton from "../../components/Form/TransactionTypeButton";
 import CategorySelect from "../CategorySelect";
 import * as R from "./styled";
-import { useStorage } from "../../hooks/useStorage";
 import { useNavigate } from "../../hooks/useNavigate";
-import { storageKeys } from "../../config/storagesKey";
 import Header from "../../components/Header";
+import { useStorageTransactions } from "../../hooks/useStorageTransactions";
 
 type FormData = {
   name: string;
@@ -41,7 +40,7 @@ export default function Register() {
   const [category, setCategory] = useState(defaultCategory);
 
   const { handleNavigateTo } = useNavigate();
-  const { getItem, setItem } = useStorage(storageKeys.transactionKey);
+  const { getItem, setItem } = useStorageTransactions();
   const {
     control,
     handleSubmit,

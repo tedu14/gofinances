@@ -1,13 +1,9 @@
-function getEnv(name: string) {
-  return String(process.env[name]);
-}
-
 const internals = {
-  clientId: getEnv("CLIENT_ID"),
-  redirectId: getEnv("REDIRECT_ID"),
+  clientId: String(process.env.CLIENT_ID),
+  redirectId: String(process.env.REDIRECT_ID),
   responseType: "token",
   scope: encodeURI("profile email"),
-  authUrl: getEnv("AUTH_URL"),
+  authUrl: String(process.env.AUTH_URL),
 };
 
 Object.freeze(internals);

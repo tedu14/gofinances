@@ -12,10 +12,9 @@ import "intl";
 import "intl/locale-data/jsonp/pt-BR";
 
 import { theme } from "./src/global/styles/theme";
-import AppRoutes from "./src/routes/app.routes";
 import { StatusBar, View } from "react-native";
-import SignInPage from "./src/screens/SignIn";
 import AuthProvider from "./src/providers/AuthProvider";
+import Routes from "./src/routes";
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -60,7 +59,7 @@ export default function App() {
       >
         <GestureHandlerRootView style={{ flex: 1 }}>
           <AuthProvider>
-            <SignInPage />
+            <Routes />
           </AuthProvider>
         </GestureHandlerRootView>
       </View>

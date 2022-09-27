@@ -1,5 +1,5 @@
 const storageKeys = {
-  transactionKey: "@gofinances:transactions",
+  transactionKey: "@gofinances:transactions_{userId}",
   user: "@gofinances:user",
 };
 

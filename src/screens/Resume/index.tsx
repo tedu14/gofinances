@@ -9,12 +9,11 @@ import { ptBR } from "date-fns/locale";
 import * as R from "./styled";
 import Header from "../../components/Header";
 import HistoryCard from "../../components/HistoryCard";
-import { storageKeys } from "../../config/storagesKey";
-import { useStorage } from "../../hooks/useStorage";
 import { ITransactionsList } from "../Dashboard";
 import { categories } from "../../utils/categories";
 import { formatCurrency } from "../../utils/formatCurrency";
 import Loading from "../../components/Loading";
+import { useStorageTransactions } from "../../hooks/useStorageTransactions";
 
 type CategoryData = {
   category: string;
@@ -33,7 +32,7 @@ export default function ResumePage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const theme = useTheme();
-  const { getItem } = useStorage(storageKeys.transactionKey);
+  const { getItem } = useStorageTransactions();
 
   const handleChangeDate = (action: "next" | "prev") => {
     if (action === "next") {

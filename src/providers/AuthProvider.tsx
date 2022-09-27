@@ -1,4 +1,11 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import * as AuthSession from "expo-auth-session";
 import * as AppleAuthentication from "expo-apple-authentication";
 
@@ -22,8 +29,10 @@ interface User {
 
 interface AuthContextProps {
   user: User;
+  userStorageLoading: boolean;
   signInWithGoogle(): Promise<void>;
   signInWithApple(): Promise<void>;
+  signOut(): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -34,66 +43,107 @@ type AuthProviderProps = {
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({} as User);
-  const { setItem } = useStorage(storageKeys.user);
+  const [userStorageLoading, setUserStorageLoading] = useState(true);
 
-  const signInWithGoogle = async () => {
-    try {
-      const { clientId, redirectId, responseType, scope, authUrl } = internals;
-      const queryParams = `?client_id=${clientId}&redirect_uri=${redirectId}&response_type=${responseType}&scope=${scope}`;
-      const url = `${authUrl}${queryParams}`;
+  const { setItem, getItem, clearStorage } = useStorage(storageKeys.user);
 
-      const { type, params } = (await AuthSession.startAsync({
-        authUrl: url,
-      })) as AuthorizationResponse;
+  const handleChangeUserStates = useCallback(
+    (signIn: () => Promise<User | void>) => async () => {
+      try {
+        const userSignIn = await signIn();
 
-      if (type === "success") {
-        const response = await fetch(
-          `https://googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${params.access_token}`
-        );
-        const userInfo = await response.json();
-        const userGoogle: User = {
-          id: userInfo.id,
-          email: userInfo.email,
-          name: userInfo.given_name,
-          photo: userInfo.picture,
-        };
-        setUser(userGoogle);
-        await setItem(userGoogle);
+        if (userSignIn) {
+          setUser(userSignIn);
+          await setItem(userSignIn);
+        }
+      } catch (error: any) {
+        throw new Error(error);
       }
-    } catch (error: any) {
-      throw new Error(error);
+    },
+    []
+  );
+
+  const signInWithGoogle = handleChangeUserStates(async () => {
+    const { clientId, redirectId, responseType, scope, authUrl } = internals;
+    console.log(internals);
+    const queryParams = `?client_id=${clientId}&redirect_uri=${redirectId}&response_type=${responseType}&scope=${scope}`;
+    const url = `${authUrl}${queryParams}`;
+
+    console.log(url);
+
+    const { type, params } = (await AuthSession.startAsync({
+      authUrl: url,
+    })) as AuthorizationResponse;
+
+    if (type === "success") {
+      const response = await fetch(
+        `https://googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${params.access_token}`
+      );
+      const userInfo = await response.json();
+
+      return {
+        id: userInfo.id,
+        email: userInfo.email,
+        name: userInfo.given_name,
+        photo: userInfo.picture,
+      };
+    }
+  });
+
+  const signInWithApple = handleChangeUserStates(async () => {
+    const credentials = await AppleAuthentication.signInAsync({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
+
+    if (credentials) {
+      const name = credentials.fullName?.givenName!;
+      const photo = `https://ui-avatars.com/api/?name=${name}&length=1`;
+
+      return {
+        id: credentials.user,
+        email: credentials.email!,
+        name,
+        photo,
+      };
+    }
+  });
+
+  const signOut = async () => {
+    try {
+      setUser({} as User);
+      await clearStorage();
+    } catch (error) {
+      console.warn("Fail to signOut user", error);
     }
   };
 
-  const signInWithApple = async () => {
+  const loadUserStorageData = async () => {
     try {
-      const credentials = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
+      const localUser = await getItem<User>();
 
-      if (credentials) {
-        const userApple: User = {
-          id: credentials.user,
-          email: credentials.email!,
-          name: credentials.fullName?.givenName!,
-        };
-        setUser(userApple);
-        await setItem(userApple);
-      }
-    } catch (error: any) {
-      throw new Error(error);
+      if (localUser) setUser(localUser);
+    } catch (err) {
+      console.warn("Fail to get user in local storage", err);
+    } finally {
+      setUserStorageLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadUserStorageData();
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        userStorageLoading,
         signInWithGoogle,
         signInWithApple,
+        signOut,
       }}
     >
       {children}

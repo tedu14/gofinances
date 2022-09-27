@@ -8,11 +8,11 @@ import {
   TransactionCard,
   TransactionCardProps,
 } from "../../components/TransactionCard";
-import { storageKeys } from "../../config/storagesKey";
-import { useStorage } from "../../hooks/useStorage";
 import * as D from "./styled";
 import Loading from "../../components/Loading";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useAuth } from "../../providers/AuthProvider";
+import { useStorageTransactions } from "../../hooks/useStorageTransactions";
 
 const faultHighlightData: HighlightCardProps[] = [
   {
@@ -49,7 +49,8 @@ export function Dashboard() {
   const [highlightData, setHighlightData] = useState<HighlightCardProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { getItem } = useStorage(storageKeys.transactionKey);
+  const { user, signOut } = useAuth();
+  const { getItem } = useStorageTransactions();
 
   const formattedDate = (date: string | number) =>
     Intl.DateTimeFormat("pt-BR", {
@@ -173,15 +174,15 @@ export function Dashboard() {
               <D.UserInfo>
                 <D.UserPhoto
                   source={{
-                    uri: "https://avatars.githubusercontent.com/u/45318847?v=4",
+                    uri: user.photo,
                   }}
                 />
                 <D.UserContainer>
                   <D.UserGreeting>Olá, </D.UserGreeting>
-                  <D.UserName>Thalison</D.UserName>
+                  <D.UserName>{user.name}</D.UserName>
                 </D.UserContainer>
               </D.UserInfo>
-              <D.LogoutButton onPress={() => {}}>
+              <D.LogoutButton onPress={signOut}>
                 <D.Icon name="power" />
               </D.LogoutButton>
             </D.UserWrapper>
